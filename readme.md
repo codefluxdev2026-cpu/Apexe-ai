@@ -199,9 +199,23 @@ Three things it deliberately does *not* do:
 
 **Undo costs nothing at runtime.** It appends a closure to a list; nothing in it runs unless you ask.
 
+# ⚙️ Apex-ai
+### The Ultimate Cross-Platform Personal AI Assistant — By FatihMakes
+
+> 📺 **[Watch the full setup video on YouTube](https://youtube.com/@codefluxs-55?si=NvIJ09rbvSkhbu2G)**
+
+A real-time voice AI that can hear, see, speak, and control your computer — on any OS. Supports Windows, macOS, and Linux. Built on the Gemini Live API for native audio streaming, delivering zero subscriptions and total digital autonomy.
+
+---
+
+## 🚀 Installation & Quick Start
+
+To clone and run Apex-ai, open your terminal and run the following commands:
+
+```bash
 git clone [https://github.com/codefluxdev2026-cpu/Apex-ai.git](https://github.com/codefluxdev2026-cpu/Apex-ai.git)
 cd Apex-ai
-python setup.py        # installs deps for YOUR OS + the browser automation engine
+python setup.py       # installs deps for YOUR OS + the browser automation engine
 python main.py
 
 ### ⚠️ A confirmation the model can't forge
