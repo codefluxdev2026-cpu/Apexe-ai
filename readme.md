@@ -199,6 +199,11 @@ Three things it deliberately does *not* do:
 
 **Undo costs nothing at runtime.** It appends a closure to a list; nothing in it runs unless you ask.
 
+git clone [https://github.com/codefluxdev2026-cpu/Apex-ai.git](https://github.com/codefluxdev2026-cpu/Apex-ai.git)
+cd Apex-ai
+python setup.py        # installs deps for YOUR OS + the browser automation engine
+python main.py
+
 ### ⚠️ A confirmation the model can't forge
 
 The old gate read like this:
