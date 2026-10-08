@@ -1,9 +1,34 @@
+GitHub par jab aap code blocks (````bash ... ````) use karte hain, toh GitHub khud بخود uske upar ek **Copy** ka button dikhata hai jisse koi bhi ek click mein un commands ko copy kar sakta hai!
+
+Aap apne `README.md` mein installation section ko is tarah se likh lein taake wahan copy ka option aa jaye.
+
+Niche poora updated README text diya gaya hai jisme installation wale hissay ko code block mein properly set kar diya gaya hai. Aap is poore text ko copy karke apni GitHub ki `README.md` file mein paste kar dein:
+
+---
+
+### 📝 Updated README Content (Copy & Paste):
+
+```markdown
 # ⚙️ Apex-ai
 ### The Ultimate Cross-Platform Personal AI Assistant — By FatihMakes
 
 > 📺 **[Watch the full setup video on YouTube](https://youtube.com/@codefluxs-55?si=NvIJ09rbvSkhbu2G)**
 
 A real-time voice AI that can hear, see, speak, and control your computer — on any OS. Supports Windows, macOS, and Linux. Built on the Gemini Live API for native audio streaming, delivering zero subscriptions and total digital autonomy.
+
+---
+
+## 🚀 Installation & Quick Start
+
+To clone and run Apex-ai, open your terminal and run the following commands:
+
+```bash
+git clone [https://github.com/codefluxdev2026-cpu/Apex-ai.git](https://github.com/codefluxdev2026-cpu/Apex-ai.git)
+cd Apex-ai
+python setup.py       # installs deps for YOUR OS + the browser automation engine
+python main.py
+
+```
 
 ---
 
@@ -24,8 +49,9 @@ It's not just an assistant — it's an extension of your digital life.
 ## 🚀 Capabilities
 
 ### Core Features
+
 | Feature | Description |
-|---|---|
+| --- | --- |
 | 🧑‍🎤 Holographic Avatar | An animated human head in the HUD — real facial geometry, lit and drawn in software, no GPU or extra packages |
 | 👄 Real Lip-Sync | ~50 mouth shapes a second from the audio's formants **and** the transcript — closures, spreads and rounds, not a volume meter |
 | 🌍 Language-Free Mouth | Articulation is derived by Unicode reduction, so Latin, Cyrillic and Greek scripts all work from one rule set — and scripts that hide pronunciation fall back cleanly |
@@ -85,6 +111,7 @@ One new dependency for the whole release — `yt-dlp`, and only to turn a YouTub
 ### The display
 
 #### 📺 Video where the face is
+
 The HUD already had a surface that takes the centre of the screen and gives it back: the camera. Video shares that same stack, so the avatar, the live camera and a video can never be on screen at once — and a video always lands exactly where you are already looking.
 
 It accepts **a local file, a direct media URL, a YouTube link, or just a description** ("play the new Dune trailer") and searches for it. It **starts muted every time**, because a soundtrack talking over the assistant is the one way this feature could make JARVIS worse rather than better. You turn the sound on by asking, or from the button in the video header.
@@ -92,14 +119,17 @@ It accepts **a local file, a direct media URL, a YouTube link, or just a descrip
 **It answers before it opens.** Resolving what to play takes seconds nothing can remove — measured at 2.0s for a link and 3.3s for a spoken phrase, plus buffering. Restricting yt-dlp to a lighter client was tried and made it worse: the fast clients came back with zero usable formats. So the seconds stay, and what changed is where you spend them — listening to JARVIS say it is coming, instead of watching nothing happen. Say "stop" during those seconds and the video is cancelled before it ever reaches the screen.
 
 #### 🔀 Two streams, one picture
+
 The first version asked YouTube for a format carrying both picture and sound and got *"Requested format is not available"*. That was not a bad selector; it was a wrong assumption. Checked against three videos — including the oldest upload on the site — **every one offered zero combined formats.** Picture and sound are separate streams now.
 
 So there are two players running together, with a timer that corrects any drift over 300 ms. And the audio track is chosen on **language first, bitrate second** — because YouTube auto-dubs a great many videos and ships every dub at the *same* bitrate as the original: measured on one video, English at 129.483 and Arabic, Bangla, German, Spanish, French, Hindi and Indonesian all at 129.482. Sorting on bitrate alone came down to a thousandth of a kilobit, so the same video would play in Arabic one time and English the next for no reason you could see. It now reads YouTube's own original-track marker first.
 
 #### 🔇 It stopped hearing the film
+
 The microphone is open while a video plays, so the moment you turn the sound on, JARVIS starts answering the film. The mic now mutes itself when the video's sound goes on and unmutes when it goes off — and it says so in the activity log rather than going deaf silently.
 
 #### 🎛 Two drawers instead of one
+
 ⚙ **SETUP** holds the things you set once — remote control, desktop shortcut, auto-start and customisation. 🎛 **CONTROLS** holds the switches you flick daily — fullscreen, morning brief, wake word, sleep, push-to-talk, HUD style. Only one is open at a time, and each sits under its own header button.
 
 The panel used to stutter when it opened, and the obvious explanation — too many buttons — was wrong. Measured, the **first** wake-word state check took **2.104 seconds**, because it imports `openwakeword` on the UI thread the moment the drawer was built. That import now happens off-thread at boot, and the drawer opens instantly whether it has six buttons or sixteen.
@@ -109,22 +139,23 @@ The panel used to stutter when it opened, and the obvious explanation — too ma
 ### Staying up
 
 #### 🪜 Every Gemini model, in one ladder
+
 Every one-shot Gemini call in the app now goes through `core/gemini.py`. Before this, **sixteen files named their own model — twenty-six times — and not one of them set a timeout.** When a single alias went unwell, the call did not fail; it hung.
 
 The ladder is nine models deep, ordered by **measurement rather than guesswork**:
 
 | Model | Measured | Model | Measured |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | `gemini-3.5-flash-lite` | 0.56s | `gemini-2.5-flash` | 0.67s |
 | `gemini-3.1-flash-lite` | 0.60s | `gemini-2.5-flash-lite` | 0.74s |
 | `gemini-flash-lite-latest` | 0.60s | `gemini-3.5-flash` | 1.13s |
 | `gemini-3-flash-preview` | 504 after 14.7s | `gemini-3.6-flash` | 504 after 12.0s |
-| `gemini-flash-latest` | 503 UNAVAILABLE | | |
+| `gemini-flash-latest` | 503 UNAVAILABLE |  |  |
 
 The three that fail were **not deleted** — a model that is unwell today is a real rung tomorrow. They sit at the bottom, and a **cooldown** decides how long a failure is believed:
 
 | What happened | Rested for | Why |
-|---|---|---|
+| --- | --- | --- |
 | Quota exhausted (429) | 5 minutes | Quotas refill |
 | No answer (503 / 504 / DEADLINE_EXCEEDED) | 30 minutes | An outage outlasts a retry |
 | Not found, or no access (404) | 6 hours | Your key does not have it, and won't in a minute |
@@ -136,6 +167,7 @@ That middle row is where the time was going. Only quota and 404 used to be coole
 ### The shape
 
 #### 🧩 Everything bundled drives the computer
+
 The bundled skill list had grown to seventeen, and some of it was nobody's business but its author's. **Not everyone updates games; everyone opens applications.**
 
 Apex-ai trims it to **twelve**, and every one of them does the same kind of thing: drive this machine. Applications, the browser, files, the desktop, the screen, the clock, the weather, the display. The rule is written into the project tree, so the next skill lands in the right folder without anyone having to ask.
@@ -143,6 +175,7 @@ Apex-ai trims it to **twelve**, and every one of them does the same kind of thin
 This is not only tidiness. Every bundled skill is declared to the model on **every** connection, whether you ever use it or not. The declarations sent at startup dropped from **16,827 characters to 12,907** — roughly a thousand tokens off every session, and five fewer wrong tools for the model to reach for.
 
 ### 🩹 Fixes
+
 * An unanswering model was retried on **every call**, at 12–15 seconds a time, because only quota and 404 failures were ever cooled down. 503/504 now rest for 30 minutes — **11.2 seconds saved per call**.
 * One-shot Gemini calls had **no timeout anywhere**, in any of the sixteen files that made them. Every call now carries a deadline of at least 10 seconds.
 * YouTube playback failed outright with *"Requested format is not available"* — it was asking for a combined stream that no longer exists.
@@ -184,8 +217,8 @@ JARVIS moves files, renames them, writes to them and changes your settings. None
 
 Say **"undo"** — in any language — and it reverses its own last action:
 
-| | |
-|---|---|
+|  |  |
+| --- | --- |
 | **Files** | move · rename · create · copy · write · delete · organize desktop |
 | **Settings** | volume · brightness · dark mode |
 
@@ -199,25 +232,6 @@ Three things it deliberately does *not* do:
 
 **Undo costs nothing at runtime.** It appends a closure to a list; nothing in it runs unless you ask.
 
-# ⚙️ Apex-ai
-### The Ultimate Cross-Platform Personal AI Assistant — By FatihMakes
-
-> 📺 **[Watch the full setup video on YouTube](https://youtube.com/@codefluxs-55?si=NvIJ09rbvSkhbu2G)**
-
-A real-time voice AI that can hear, see, speak, and control your computer — on any OS. Supports Windows, macOS, and Linux. Built on the Gemini Live API for native audio streaming, delivering zero subscriptions and total digital autonomy.
-
----
-
-## 🚀 Installation & Quick Start
-
-To clone and run Apex-ai, open your terminal and run the following commands:
-
-```bash
-git clone [https://github.com/codefluxdev2026-cpu/Apex-ai.git](https://github.com/codefluxdev2026-cpu/Apex-ai.git)
-cd Apex-ai
-python setup.py       # installs deps for YOUR OS + the browser automation engine
-python main.py
-
 ### ⚠️ A confirmation the model can't forge
 
 The old gate read like this:
@@ -226,11 +240,13 @@ The old gate read like this:
 if action in _DANGEROUS_ACTIONS:            # {"restart", "shutdown"}
     confirmed = str(params.get("confirmed", "")).lower()
 
-git clone [https://github.com/codefluxdev2026-cpu/Apex-ai.git](https://github.com/codefluxdev2026-cpu/Apex-ai.git)
-cd Apex-ai
-python setup.py       # installs deps for YOUR OS + the browser automation engine
-python main.py
+```
 
+---
+
+## 📂 Project Structure
+
+```text
 Apex-ai/
 ├── main.py                  # Core loop — Gemini Live session, audio I/O, viseme extraction, tool dispatch
 ├── ui.py                    # PyQt6 HUD — avatar canvas, waveform, log panel, settings drawer, camera feed
@@ -239,8 +255,6 @@ Apex-ai/
 ├── plugins/
 │   └── _template.py         # Copy this to write a new skill — one file, drop in, done
 ├── actions/                 # Bundled skills — each self-describes via a TOOL dict + handler
-│                            #   Everything here drives the COMPUTER, which is what decides
-│                            #   whether a new skill belongs in this folder at all.
 │   ├── web_search.py        # Gemini + DDG parallel search (news, research, price, compare)
 │   ├── screen_processor.py  # Screen & webcam capture for vision
 │   ├── background_monitor.py # User-configured topic watching — daily DDG check
@@ -279,3 +293,64 @@ Apex-ai/
 └── config/
     ├── api_keys.json        # API key, name, voice, colour, toggles — created on first launch (git-ignored)
     └── certs/               # Self-signed TLS pair for the phone dashboard — generated locally (git-ignored)
+
+```
+
+---
+
+## 🙏 Third-Party Assets
+
+| Asset | Source | Licence |
+| --- | --- | --- |
+| `core/face_model.obj` | [MediaPipe](https://github.com/codefluxdev2026-cpu/Apexe-ai) canonical face model — 468 vertices of measured human face geometry | Apache License 2.0 |
+
+---
+
+## 🔒 Your Data
+
+Everything stays on your machine. There is no server, no telemetry and no account.
+
+| What | Where | Notes |
+| --- | --- | --- |
+| Gemini API key, plugin credentials | `config/api_keys.json` | **Plaintext.** Anyone with your user account can read it. Treat it like a password file. |
+| Dashboard TLS certificate + private key | `config/certs/` | Generated locally, self-signed, never leaves the machine. |
+| What the assistant remembers about you | `memory/long_term.json` | Delete the file to make it forget everything. |
+
+All three are listed in `.gitignore`, so a fork or a pull request cannot leak them by accident. **If you have already committed `config/api_keys.json` anywhere public, revoke that key** at [aistudio.google.com](https://aistudio.google.com/app/apikey) and generate a new one — removing the file in a later commit does not remove it from the history.
+
+Your voice is streamed to Google's Gemini Live API while a session is open; that is the one thing that leaves your computer, and it stops when you mute or close the app.
+
+---
+
+## ⚠️ License
+
+Personal and non-commercial use only.
+
+Licensed under **[Creative Commons BY-NC 4.0](https://youtube.com/@codefluxs-55?si=Nc-_iZynBgcEbyyP)**.
+
+---
+
+## 👤 Connect with the Creator
+
+Engineered by a developer building a real-world JARVIS-style assistant.
+
+⭐ **Star the repository to support the journey.**
+
+| Platform | Link |
+| --- | --- |
+| YouTube | **[FatihMakes](https://youtube.com/@codefluxs-55?si=Nc-_iZynBgcEbyyP)** |
+
+---
+
+## 🎨 Archer UI layout
+
+The window now uses the Archer-style layout: tasks + satellite stream on the left, the Memory / Soul / Skills / Settings graph and particle orb on top, Agent Town below, chat on the right. The new widgets live in `archer_ui.py`; `ui.py` only wires them to the existing backend. The old `ui.py` is kept as `ui_classic_backup.py` — copy it over `ui.py` to go back.
+
+* **Theme button** (top right) cycles cyan → orange → purple → red; the choice is saved in `config/archer_theme.json`.
+* **Memory / Soul / Skills / Settings** nodes open the existing Memory panel, Customize (name, voice, colour), Plugin manager and Setup drawer.
+* **Tasks / notes** are saved in `config/archer_tasks.json`.
+* ⚙ and 🎛 in the title bar still open the setup and everyday-controls drawers.
+
+```
+
+```
